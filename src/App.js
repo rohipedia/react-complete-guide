@@ -19,19 +19,10 @@ class App extends Component {
     showPersons: false
   }
 
-  switchNameHandler = (newName) => {
-    this.setState({
-      persons: [{
-        name: newName,
-        age: 28
-      }, {
-        name: 'Manu',
-        age: 29
-      }, {
-        name: 'Stephanie',
-        age: 26
-      }]
-    });
+  deletePersonHandler = (index) => {
+    const persons = this.state.persons;
+    persons.splice(index, 1);
+    this.setState({persons: persons});
   }
 
   nameChangedHandler = (event) => {
@@ -50,7 +41,8 @@ class App extends Component {
   }
 
   togglePersonsHandler = () => {
-
+    const doesShow = this.state.showPersons;
+    this.setState({ showPersons: !doesShow })
   }
 
   render() {
@@ -62,28 +54,29 @@ class App extends Component {
       cursor: 'pointer'
     }
 
+    let persons = null;
+
+    if (this.state.showPersons) {
+      persons = (
+        <div>
+          {this.state.persons.map((person, index) => {
+            return <Person
+              click={() => this.deletePersonHandler(index)}
+              name={person.name}
+              age={person.age} />  
+          })}
+        </div>
+      )
+    }
+
     return (
       <div className="App">
         <h1>Hi, I'm a React App</h1>
         <p>This is really working!</p>
-
         <button
           style={style}
-          onClick={this.togglePersonsHandler}
-        >Change name</button>
-        <div>
-          <Person
-            name={this.state.persons[0].name}
-            age={this.state.persons[0].age} />
-          <Person
-            name={this.state.persons[1].name}
-            age={this.state.persons[1].age}
-            click={this.switchNameHandler.bind(this, 'Max!')}
-            change={this.nameChangedHandler}>My hobbies: Racing</Person>
-          <Person
-            name={this.state.persons[2].name}
-            age={this.state.persons[2].age} />
-        </div>
+          onClick={this.togglePersonsHandler}>Toggle Persons</button>
+        { persons }
       </div>
     );
   }
